@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+
+    "name": "hax0r news",
+    "version": "0.1",
+    "description": "Simple Hacker News theme",
+
+    "permissions": [
+        "tabs",
+        "storage"
+    ],
+
+    "options_page": "options.html",
+
+    "offline_enabled": true,
+
+    "icons": {
+      "128": "icon_64x64.png"
+    },
+
+    "content_scripts": [
+      {
+        "matches": [
+            "http://news.ycombinator.com/*"
+        ],
+        "css": ["hn.css"],
+        "js": ["hn.js"]
+      }
+    ]
+}
