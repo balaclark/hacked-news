@@ -30,9 +30,6 @@
         input[key].checked = options[key];
       }
     });
-
-    // new_window_articles.checked = !!parseInt(chrome.storage.local.get('h48ed_news_new_window_articles'));
-    // new_window_comments.checked = !!parseInt(chrome.storage.local.get('h48ed_news_new_window_comments'));
   }
 
   document.addEventListener('DOMContentLoaded', restore_options)
