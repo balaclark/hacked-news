@@ -1,15 +1,39 @@
 
-td[bgcolor="#ff6600"] {
+body {
+  font-size: 10pt !important;
+}
+
+body > center > table,
+#layout {
+  max-width: 700px !important;
+}
+
+td[bgcolor="#ff6600"],
+#layout-header, .toolbar-wrapper {
   border-radius: 4px;
   background-color: #efefef !important;
 }
 
-a[href="news"] {
-  font-weight: 100 !important;
+.hn_search_toolbar {
+  margin: 4px;
 }
 
-table[bgcolor="#f6f6ef"] {
+.toolbar-logo-ycombinator {
+  background-color: #F60;
+}
+
+.content-pagination a {
+  font-size: 1em !important;
+}
+
+table[bgcolor="#f6f6ef"],
+#layout-body,
+#layout-footer {
   background-color: transparent !important;
+}
+
+a[href="news"] {
+  font-weight: 100 !important;
 }
 
 table[bgcolor="#f6f6ef"] table:first-child {
@@ -19,10 +43,6 @@ table[bgcolor="#f6f6ef"] table:first-child {
 
 table[bgcolor="#f6f6ef"] table table {
   border-left: solid 1px #efefef !important;
-}
-
-body > center > table {
-  max-width: 43.75em !important;
 }
 
 body > center > table td.title,

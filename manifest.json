@@ -21,7 +21,8 @@
     "content_scripts": [
       {
         "matches": [
-            "http://news.ycombinator.com/*"
+            "http://news.ycombinator.com/*",
+            "http://www.hnsearch.com/*"
         ],
         "css": ["hn.css"],
         "js": ["hn.js"]
