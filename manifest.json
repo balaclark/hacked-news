@@ -4,6 +4,7 @@
     "name": "Hacked News",
     "version": "0.1.0",
     "description": "A simple, clean Hacker News theme.",
+    "homepage_url": "https://github.com/balaclark/hacked-news",
 
     "permissions": [
         "tabs",
