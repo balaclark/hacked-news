@@ -4,35 +4,40 @@
 
   'use strict';
 
-  var i,
+  var i, author_links,
     article_links = document.querySelectorAll('.title a'),
     comment_links = document.querySelectorAll('.subtext a[href^=item]'),
-    author_links = document.querySelectorAll(
-      'a[href="user?id=' + document.querySelector('.subtext a').innerText + '"]'
-    ),
+    author = document.querySelector('.subtext a'),
     spacer_gifs = document.querySelectorAll('img[src="http://ycombinator.com/images/s.gif"]');
 
-  // tag the OP
-  if (document.querySelectorAll('.title').length === 1) {
-    for (i = 0; i < author_links.length; ++i) {
-      author_links[i].className += ' op';
+  if (author) {
+
+    // tag the OP  
+    author_links = document.querySelectorAll(
+      'a[href="user?id=' + author.innerText + '"]'
+    );
+
+    if (document.querySelectorAll('.title').length === 1) {
+      for (i = 0; i < author_links.length; ++i) {
+        author_links[i].className += ' op';
+      }
     }
-  }
 
-  // manually set spacer row widths
-  for (i = 0; i < spacer_gifs.length; ++i) {
-    spacer_gifs[i].parentElement.width = spacer_gifs[i].width;
-  }
-
-  function openLinkInNewWindow(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    window.open(this.href);
+    // manually set spacer row widths
+    for (i = 0; i < spacer_gifs.length; ++i) {
+      spacer_gifs[i].parentElement.width = spacer_gifs[i].width;
+    }
   }
 
   chrome.extension.sendMessage({method: 'getOptions'}, function (options) {
 
     var i, link;
+
+    function openLinkInNewWindow(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      window.open(this.href);
+    }
 
     // open article in new windows
     if (options.new_window_articles) {
