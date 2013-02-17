@@ -5,7 +5,8 @@
 
   var input = {
     new_window_articles: document.querySelector('#new-window-articles'),
-    new_window_comments: document.querySelector('#new-window-comments')
+    new_window_comments: document.querySelector('#new-window-comments'),
+    open_in_background: document.querySelector('#open-in-background')
   }
 
   function save_options() {
@@ -36,5 +37,6 @@
 
   input.new_window_articles.addEventListener('change', save_options);
   input.new_window_comments.addEventListener('change', save_options);
+  input.open_in_background.addEventListener('change', save_options);
 
 }());

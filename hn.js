@@ -29,14 +29,14 @@
     }
   }
 
-  chrome.extension.sendMessage({method: 'getOptions'}, function (options) {
+  chrome.extension.sendMessage({ method: 'getOptions' }, function (options) {
 
     var i, link;
 
     function openLinkInNewWindow(e) {
       e.stopPropagation();
       e.preventDefault();
-      window.open(this.href);
+      chrome.extension.sendMessage({ method: 'openTab', url: this.href });
     }
 
     // open article in new windows
