@@ -1,5 +1,5 @@
 
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
 
   'use strict';
 
@@ -36,6 +36,11 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             });
           });
         });
+
+        break;
+
+      case 'resetTabIndex':
+        chrome.storage.local.remove('last_tab_index');
         break;
     }
 

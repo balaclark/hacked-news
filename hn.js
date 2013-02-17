@@ -12,7 +12,7 @@
 
   if (author) {
 
-    // tag the OP  
+    // tag the OP
     author_links = document.querySelectorAll(
       'a[href="user?id=' + author.innerText + '"]'
     );
@@ -59,5 +59,14 @@
       }
     }
   });
+
+  function resetTabIndex() {
+    chrome.extension.sendMessage({ method: 'resetTabIndex' });
+  }
+
+  if (window.location.pathname !== '/item') {
+    window.addEventListener('load', resetTabIndex, false);
+    window.addEventListener('beforeunload', resetTabIndex, false);
+  }
 
 }(chrome, document, window));
