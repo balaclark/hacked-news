@@ -54,7 +54,6 @@
   // get extra info via ajax
   ajax('GET', comments_url, function (html) {
     var upvote_el = html.match(/<table border=0><tr><td><center><a id=up.+?href="(.+?)"/);
-    console.log(upvote_el.length);
     document.querySelector('#site').innerText = html.match(/<span class="comhead"> (.+) <\/span>/)[1];
     if (upvote_el) {
       upvote.href = 'http://news.ycombinator.com/' + upvote_el[1];
