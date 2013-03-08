@@ -1,12 +1,13 @@
 
-(function () {
+(function (chrome) {
 
   'use strict';
 
   var input = {
     new_window_articles: document.querySelector('#new-window-articles'),
-    new_window_comments: document.querySelector('#new-window-comments'),
-    open_in_background: document.querySelector('#open-in-background')
+    open_in_background: document.querySelector('#open-in-background'),
+    use_toolbar: document.querySelector('#use-toolbar'),
+    viewtext: document.querySelector('#viewtext')
   }
 
   function save_options() {
@@ -36,7 +37,8 @@
   document.addEventListener('DOMContentLoaded', restore_options)
 
   input.new_window_articles.addEventListener('change', save_options);
-  input.new_window_comments.addEventListener('change', save_options);
   input.open_in_background.addEventListener('change', save_options);
+  input.use_toolbar.addEventListener('change', save_options);
+  input.viewtext.addEventListener('change', save_options);
 
-}());
+}(chrome));

@@ -23,7 +23,7 @@
       }
     }
 
-    // manually set spacer row widths
+    // manually set spacer row widths so that the theme plays nicely with Hacker News Collapse
     for (i = 0; i < spacer_gifs.length; ++i) {
       spacer_gifs[i].parentElement.width = spacer_gifs[i].width;
     }
@@ -33,28 +33,29 @@
 
     var i, link;
 
-    function openLinkInNewWindow(e) {
+    function openArticleInNewWindow(e) {
+
+      var comment_link = this.parentNode.parentNode.nextElementSibling.querySelector('.subtext a[href^=item]');
+
       e.stopPropagation();
       e.preventDefault();
-      chrome.extension.sendMessage({ method: 'openTab', url: this.href });
+
+      chrome.extension.sendMessage({
+        method: 'openTab',
+        url: this.href,
+        title: this.innerText,
+        no_comments: comment_link.innerText.match(/^[0-9]+/),
+        comments_url: comment_link.href
+      });
     }
 
-    // open article in new windows
+    // TODO: move this code to events.js so that window refreshes aren't needed
+    // after updating the options
     if (options.new_window_articles) {
       for (i in article_links) {
         link = article_links[i];
         if (typeof link === 'object' && link.innerText !== 'More') {
-          link.addEventListener('click', openLinkInNewWindow, false);
-        }
-      }
-    }
-
-    // open comment links in new windows
-    if (options.new_window_comments) {
-      for (i in comment_links) {
-        link = comment_links[i];
-        if (typeof link === 'object' && link.innerText !== 'More') {
-          link.addEventListener('click', openLinkInNewWindow, false);
+          link.addEventListener('click', openArticleInNewWindow, false);
         }
       }
     }
