@@ -5,8 +5,7 @@
   'use strict';
 
   var i, author_links,
-    article_links = document.querySelectorAll('.title a'),
-    comment_links = document.querySelectorAll('.subtext a[href^=item]'),
+    article_links = document.querySelectorAll('.title a, a.content-story-title'),
     author = document.querySelector('.subtext a'),
     spacer_gifs = document.querySelectorAll('img[src="http://ycombinator.com/images/s.gif"]');
 
@@ -33,32 +32,28 @@
 
     var i, link;
 
-    function openArticleInNewWindow(e) {
+    document.addEventListener('click', function (e) {
 
-      var comment_link = this.parentNode.parentNode.nextElementSibling.querySelector('.subtext a[href^=item]');
+      var comment_link, parent, el = e.srcElement;
 
-      e.stopPropagation();
-      e.preventDefault();
+      if (el.tagName === 'A' && el.innerText !== 'More' &&
+         (el.className === 'content-story-title' || el.parentElement.className === 'title')) {
 
-      chrome.extension.sendMessage({
-        method: 'openTab',
-        url: this.href,
-        title: this.innerText,
-        no_comments: comment_link.innerText.match(/^[0-9]+/),
-        comments_url: comment_link.href
-      });
-    }
+        e.preventDefault();
 
-    // TODO: move this code to events.js so that window refreshes aren't needed
-    // after updating the options
-    if (options.new_window_articles) {
-      for (i in article_links) {
-        link = article_links[i];
-        if (typeof link === 'object' && link.innerText !== 'More') {
-          link.addEventListener('click', openArticleInNewWindow, false);
-        }
+        comment_link = (window.location.host !== 'www.hnsearch.com')
+          ? el.parentNode.parentNode.nextElementSibling.querySelector('.subtext a[href^=item]')
+          : el.parentNode.parentNode.parentNode.parentNode.parentNode.querySelector('.content-result-subheader a:nth-child(2)');
+
+        chrome.extension.sendMessage({
+          method: 'openArticle',
+          url: el.href,
+          title: el.innerText,
+          no_comments: comment_link.innerText.match(/^[0-9]+/),
+          comments_url: comment_link.href
+        });
       }
-    }
+    });
   });
 
   function resetTabIndex() {

@@ -11,7 +11,7 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
         sendResponse(options);
         break;
 
-      case 'openTab':
+      case 'openArticle':
 
         chrome.tabs.getSelected(null, function (current_tab) {
 
@@ -27,27 +27,33 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
               '&viewmode=' + ((options.viewtext === true) ? 'viewtext' : 'original'),
 
             normal_url = (options.viewtext === true)
-             ? 'http://viewtext.org/api/text?url=' + request.url
-             : request.url,
+              ? 'http://viewtext.org/api/text?url=' + request.url
+              : request.url,
 
             url = (options.use_toolbar && request.url.search(/^http(s)?:\/\/news.ycombinator/) < 0)
               ? toolbar_url : normal_url;
 
-            if (!last_tab_index) {
-              last_tab_index = current_tab.index;
+            if (options.new_window_articles) {
+
+              if (!last_tab_index) {
+                last_tab_index = current_tab.index;
+              }
+
+              last_tab_index++;
+
+              chrome.storage.local.set({
+                last_tab_index: last_tab_index
+              });
+
+              chrome.tabs.create({
+                url: url,
+                active: !options.open_in_background,
+                index: last_tab_index
+              });
+
+            } else {
+              chrome.tabs.update(current_tab.id, { url: url });
             }
-
-            last_tab_index++;
-
-            chrome.storage.local.set({
-              last_tab_index: last_tab_index
-            });
-
-            chrome.tabs.create({
-              url: url,
-              active: !options.open_in_background,
-              index: last_tab_index
-            });
           });
         });
 
