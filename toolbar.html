@@ -2,9 +2,7 @@
 
 <!--
   TODO:
-    · make own icons
-    · don't hotlink the logo image
-    · don't hotlink the upvote image
+    · make own logo image
     · fix the back button
 -->
 
@@ -48,6 +46,12 @@
     top: 5px;
   }
 
+  #upvote {
+    opacity: 0.5;
+    color: #828282;
+    font-size: 75%;
+  }
+
   #content {
     border: 0;
     width: 100%;
@@ -75,16 +79,11 @@
       Hacker News
     </a>
     |
+    <a id="upvote" style="display:none" href="#">&#x25B2;</a>
     <span id="title"></span>
     <span id="site"></span>
   </div>
   <div class="right">
-    <span id="upvote" style="display:none">
-      <a href="#">
-        <img src="http://ycombinator.com/images/grayarrow.gif" border="0" vspace="3" hspace="2">
-      </a>
-      |
-    </span>
     <a href="#" id="comments"><span id="no_comments"></span> comments</a>
     |
     <a href="#" id="viewtext">view text</a>

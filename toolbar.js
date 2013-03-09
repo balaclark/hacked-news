@@ -10,7 +10,7 @@
     comments_url = decodeURIComponent(req[4]),
     viewmode = decodeURIComponent(req[5]),
     toolbar = document.querySelector('#toolbar'),
-    upvote = document.querySelector('#upvote a'),
+    upvote = document.querySelector('#upvote'),
     iframe = document.querySelector('#content'),
     view_text = document.querySelector('#viewtext'),
     view_original = document.querySelector('#original');
@@ -57,7 +57,7 @@
     document.querySelector('#site').innerText = html.match(/<span class="comhead"> (.+) <\/span>/)[1];
     if (upvote_el) {
       upvote.href = 'http://news.ycombinator.com/' + upvote_el[1];
-      document.querySelector('#upvote').style.display = 'inline';
+      upvote.style.display = 'inline';
     }
   });
 
@@ -74,7 +74,7 @@
   upvote.addEventListener('click', function (e) {
     e.preventDefault();
     ajax('GET', upvote.href, function (response) {
-      document.querySelector('#upvote').style.display = 'none';
+      upvote.style.display = 'none';
     });
   }, false);
 
