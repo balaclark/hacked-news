@@ -7,7 +7,7 @@
   var i, author_links,
     article_links = document.querySelectorAll('.title a, a.content-story-title'),
     author = document.querySelector('.subtext a'),
-    spacer_gifs = document.querySelectorAll('img[src="http://ycombinator.com/images/s.gif"]');
+    spacer_gifs = document.querySelectorAll('img[src="s.gif"]');
 
   if (author) {
 
