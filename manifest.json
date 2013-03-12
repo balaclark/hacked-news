@@ -31,7 +31,9 @@
       {
         "matches": [
             "http://news.ycombinator.com/*",
-            "http://www.hnsearch.com/*"
+            "http://www.hnsearch.com/*",
+            "https://news.ycombinator.com/*",
+            "https://www.hnsearch.com/*"
         ],
         "css": ["hn.css"],
         "js": ["hn.js"]
