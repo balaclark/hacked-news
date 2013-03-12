@@ -19,6 +19,8 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
 
             var last_tab_index = storage.last_tab_index,
 
+            yc_url = request.url.search(/^http(s)?:\/\/news.ycombinator/) > -1,
+
             toolbar_url = 'toolbar.html?src=' +
               encodeURIComponent(request.url) +
               '&title=' + encodeURIComponent(request.title) +
@@ -26,11 +28,11 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
               '&comments_url=' + encodeURIComponent(request.comments_url) +
               '&viewmode=' + ((options.viewtext === true) ? 'viewtext' : 'original'),
 
-            normal_url = (options.viewtext === true)
+            normal_url = (options.viewtext === true && !yc_url)
               ? 'http://viewtext.org/api/text?url=' + request.url
               : request.url,
 
-            url = (options.use_toolbar && request.url.search(/^http(s)?:\/\/news.ycombinator/) < 0)
+            url = (options.use_toolbar && !yc_url)
               ? toolbar_url : normal_url;
 
             if (options.new_window_articles) {
