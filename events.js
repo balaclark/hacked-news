@@ -47,6 +47,7 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
                 last_tab_index: last_tab_index
               });
 
+              // FIXME: in incognito mode this opens the tab in the wrong window
               chrome.tabs.create({
                 url: url,
                 active: !options.open_in_background,
@@ -56,6 +57,27 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
             } else {
               chrome.tabs.update(current_tab.id, { url: url });
             }
+          });
+        });
+
+        break;
+
+      case 'openBackgroundPage':
+
+        chrome.storage.local.get(function (storage) {
+
+          var last_tab_index = storage.last_tab_index;
+
+          last_tab_index++;
+
+          chrome.storage.local.set({
+            last_tab_index: last_tab_index
+          });
+
+          chrome.tabs.create({
+            url: request.url,
+            active: false,
+            index: last_tab_index
           });
         });
 

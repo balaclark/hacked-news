@@ -52,6 +52,10 @@
   // break out of the iframe if the site doesn't allow embedding
   ajax('GET', src, function (html, xhr) {
     if (xhr.getResponseHeader('x-frame-options')) {
+      chrome.extension.sendMessage({
+        method: 'openBackgroundPage',
+        url: comments_url
+      });
       window.location = src;
     }
   });
