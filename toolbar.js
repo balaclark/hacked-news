@@ -60,10 +60,14 @@
     }
   });
 
+  function setPoints(html) {
+    document.querySelector('#points').innerText = html.match(/<span id=score_.+?>(\d+ point(?:s)?)/)[1];
+  }
+
   // get extra info via ajax
   ajax('GET', comments_url, function (html) {
     var upvote_el = html.match(/<table border=0><tr><td><center><a id=up.+?href="(.+?)"/);
-    document.querySelector('#points').innerText = html.match(/<span id=score_.+?>(\d+ points)/)[1];
+    setPoints(html);
     document.querySelector('#site').innerText = html.match(/<span class="comhead"> (.+) <\/span>/)[1];
     if (upvote_el) {
       upvote.href = 'http://news.ycombinator.com/' + upvote_el[1];
@@ -75,7 +79,7 @@
   window.addEventListener('focus', function () {
     ajax('GET', comments_url, function (html) {
       try {
-        document.querySelector('#points').innerText = html.match(/<span id=score_.+?>(\d+ points)/)[1];
+        setPoints(html);
         document.querySelector('#no_comments').innerText = html.match(/([0-9]+) comments/)[1];
       } catch (e) {}
     });
