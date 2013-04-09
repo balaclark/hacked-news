@@ -5,6 +5,7 @@ body {
 
 body > center > table,
 #layout {
+  width: auto;
   max-width: 700px !important;
 }
 
