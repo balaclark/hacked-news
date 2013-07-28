@@ -65,11 +65,11 @@
 
   // get extra info via ajax
   ajax('GET', comments_url, function (html) {
-    var upvote_el = html.match(/<table border=0><tr><td><center><a id=up.+?href="(.+?)"/);
+    var upvote_el = html.match(/<table border=0><tr><td><center><a id=up_.+?href="(.+?)"/);
     setPoints(html);
     document.querySelector('#site').innerText = html.match(/<span class="comhead"> (.+) <\/span>/)[1];
     if (upvote_el) {
-      upvote.href = 'http://news.ycombinator.com/' + upvote_el[1];
+      upvote.href = 'https://news.ycombinator.com/' + upvote_el[1].replace(/&amp;/g, '&');
       upvote.style.display = 'inline';
     }
   });
