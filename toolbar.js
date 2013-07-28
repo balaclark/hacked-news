@@ -37,11 +37,10 @@
   }
 
   /**
-   * Tries to keep the iframe height always at 100%. Uses detectZoom to offset
-   * the page zoom level and keep the 100% (ish) even at different page zoom levels.
+   * Tries to keep the iframe height always at 100%.
    */
   function fitIframe() {
-    var height = ((document.height - toolbar.clientHeight) / detectZoom.zoom());
+    var height = window.innerHeight - toolbar.offsetHeight;
     iframe.style.height = height + 'px';
   };
 
