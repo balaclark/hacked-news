@@ -3,7 +3,8 @@ Hacked News
 
 Provides a clean and readable Hacker News experience as well as some other optional HN enhancements.
 
-Available in the [chrome webstore](https://chrome.google.com/webstore/detail/hacked-news/klijiafmajbhbkhjbfajmdbogjlcibeb).
+Available for [Chrome](https://chrome.google.com/webstore/detail/hacked-news/klijiafmajbhbkhjbfajmdbogjlcibeb) 
+and [Opera 15+](https://addons.opera.com/en/extensions/details/hacked-news/?display=en).
 
 Included Enhancements
 --------------------
