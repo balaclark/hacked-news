@@ -21,7 +21,7 @@ var readability = {
 	kindleSrc:   'http://lab.arc90.com/experiments/readability/kindle.php',
 	iframeLoads: 0,
 	frameHack:   false, /**
-	                     * The frame hack is to workaround a firefox bug where if you
+											 * The frame hack is to workaround a firefox bug where if you
 						 * pull content out of a frame and stick it into the parent element, the scrollbar won't appear.
 						 * So we fake a scrollbar in the wrapping div.
 						**/
@@ -57,12 +57,20 @@ var readability = {
 	 *
 	 * @return void
 	 **/
-	init: function(doc, preserveUnlikelyCandidates) {
+	init: function(options) {
 
-		// TODO: make passing document optional
-		this.document = doc;
+		// allow html to be passed in by string, otherwise work with the current document
+		if (typeof options.html !== 'undefined') {
+			var doc = document.implementation.createHTMLDocument();
+			doc.open("replace");
+			doc.write(options.html);
+			doc.close();
+			this.document = doc;
+		} else {
+			this.document = window.document;
+		}
 
-		preserveUnlikelyCandidates = (typeof preserveUnlikelyCandidates == 'undefined') ? false : preserveUnlikelyCandidates;
+		preserveUnlikelyCandidates = (typeof options.preserveUnlikelyCandidates == 'undefined') ? false : options.preserveUnlikelyCandidates;
 
 		if(this.document.body && !readability.bodyCache)
 			readability.bodyCache = this.document.body.innerHTML;
@@ -72,10 +80,8 @@ var readability = {
 		/* Build readability's DOM tree */
 		var overlay        = window.document.createElement("DIV");
 		var innerDiv       = window.document.createElement("DIV");
-		// var articleTools   = readability.getArticleTools();
 		var articleTitle   = readability.getArticleTitle();
 		var articleContent = readability.grabArticle(preserveUnlikelyCandidates);
-		// var articleFooter  = readability.getArticleFooter();
 
 		/**
 		 * If we attempted to strip unlikely candidates on the first run through, and we ended up with no content,
@@ -97,49 +103,11 @@ var readability = {
 		overlay.id              = "readOverlay";
 		innerDiv.id             = "readInner";
 
-		/* Apply user-selected styling */
-		// document.body.className = readStyle;
-		// overlay.className       = readStyle;
-		// innerDiv.className      = readMargin + " " + readSize;
-
 		/* Glue the structure of our document together. */
-		// articleContent.appendChild( articleFooter  );
-		      innerDiv.appendChild( articleTitle   );
-		      innerDiv.appendChild( articleContent );
-		       // overlay.appendChild( articleTools   );
-		       // overlay.appendChild( innerDiv       );
-
-		/* Clear the old HTML, insert the new content. */
-		// document.body.innerHTML = "";
-		// document.body.insertBefore(overlay, document.body.firstChild);
-
-		// if(readability.frameHack)
-		// {
-		// 	var readOverlay = document.getElementById('readOverlay');
-		// 	readOverlay.style.height = '100%';
-		// 	readOverlay.style.overflow = 'auto';
-		// }
+		innerDiv.appendChild( articleTitle   );
+		innerDiv.appendChild( articleContent );
 
 		return innerDiv;
-	},
-
-	/**
-	 * Get the article tools Element that has buttons like reload, print, email.
-	 *
-	 * @return void
-	 **/
-	getArticleTools: function () {
-		var articleTools = this.document.createElement("DIV");
-
-		articleTools.id        = "readTools";
-		articleTools.innerHTML = "\
-			<a href='#' onclick='return window.location.reload()' title='Reload original page' id='reload-page'>Reload Original Page</a>\
-			<a href='#' onclick='javascript:window.print();' title='Print page' id='print-page'>Print Page</a>\
-			<a href='#' onclick='readability.emailBox(); return false;' title='Email page' id='email-page'>Email Page</a>\
-			<a href='#' onclick='readability.kindleBox(); return false;' title='Send to Amazon Kindle' id='kindle-page'>Send to Kindle</a>\
-		";
-
-		return articleTools;
 	},
 
 	/**
@@ -153,27 +121,6 @@ var readability = {
 		articleTitle.innerHTML = this.document.title;
 
 		return articleTitle;
-	},
-
-	/**
-	 * Get the footer with the readability mark etc.
-	 *
-	 * @return void
-	 **/
-	getArticleFooter: function () {
-		var articleFooter = this.document.createElement("DIV");
-
-		articleFooter.id = "readFooter";
-		// articleFooter.innerHTML = "\
-		// 	<a href='http://lab.arc90.com/experiments/readability'><img src='http://lab.arc90.com/experiments/readability/images/footer-readability.png'></a>\
-		// 	<a href='http://www.arc90.com'><img src='http://lab.arc90.com/experiments/readability/images/footer-arc90.png'></a>\
-		// 	<a href='http://www.twitter.com/arc90' class='footer-twitterLink'>Follow us on Twitter &raquo;</a>\
-	 //                <div class='footer-right' >\
-	 //                        <span class='version'>Readability version " + readability.version + "</span>\
-		// 			</div>\
-		// ";
-
-		return articleFooter;
 	},
 
 	/**
@@ -380,7 +327,7 @@ var readability = {
 			if (!preserveUnlikelyCandidates) {
 				var unlikelyMatchString = node.className + node.id;
 				if (unlikelyMatchString.search(readability.regexps.unlikelyCandidatesRe) !== -1 &&
-				    unlikelyMatchString.search(readability.regexps.okMaybeItsACandidateRe) == -1 &&
+						unlikelyMatchString.search(readability.regexps.okMaybeItsACandidateRe) == -1 &&
 					node.tagName !== "BODY")
 				{
 					dbg("Removing unlikely candidate - " + unlikelyMatchString);
@@ -509,7 +456,7 @@ var readability = {
 		 * Things like preambles, content split by ads that we removed, etc.
 		**/
 		var articleContent        = this.document.createElement("DIV");
-	        articleContent.id     = "readability-content";
+					articleContent.id     = "readability-content";
 		var siblingScoreThreshold = Math.max(10, topCandidate.readability.contentScore * 0.2);
 		var siblingNodes          = topCandidate.parentNode.childNodes;
 		for(var i=0, il=siblingNodes.length; i < il; i++)
@@ -595,7 +542,7 @@ var readability = {
 	 * @return number (integer)
 	**/
 	getCharCount: function (e,s) {
-	    s = s || ",";
+			s = s || ",";
 		return readability.getInnerText(e).split(s).length;
 	},
 
@@ -607,8 +554,8 @@ var readability = {
 	 * @return void
 	**/
 	cleanStyles: function (e) {
-	    e = e || document;
-	    var cur = e.firstChild;
+			e = e || document;
+			var cur = e.firstChild;
 
 		if(!e)
 			return;
@@ -617,8 +564,8 @@ var readability = {
 		if(typeof e.removeAttribute == 'function' && e.className != 'readability-styled')
 			e.removeAttribute('style');
 
-	    // Go until there are no more child nodes
-	    while ( cur != null ) {
+			// Go until there are no more child nodes
+			while ( cur != null ) {
 			if ( cur.nodeType == 1 ) {
 				// Remove style attribute(s) :
 				if(cur.className != "readability-styled") {
@@ -760,7 +707,7 @@ var readability = {
 				var embeds     = tagsList[i].getElementsByTagName("embed");
 				for(var ei=0,il=embeds.length; ei < il; ei++) {
 					if (embeds[ei].src.search(readability.regexps.videoRe) == -1) {
-					  embedCount++;
+						embedCount++;
 					}
 				}
 
@@ -769,11 +716,11 @@ var readability = {
 				var toRemove      = false;
 
 				if ( img > p ) {
-				 	toRemove = true;
+					toRemove = true;
 				} else if(li > p && tag != "ul" && tag != "ol") {
 					toRemove = true;
 				} else if( input > Math.floor(p/3) ) {
-				 	toRemove = true;
+					toRemove = true;
 				} else if(contentLength < 25 && (img == 0 || img > 2) ) {
 					toRemove = true;
 				} else if(weight < 25 && linkDensity > .2) {
@@ -806,79 +753,6 @@ var readability = {
 				}
 			}
 		}
-	},
-
-	/**
-	 * Show the email popup.
-	 *
-	 * @return void
-	 **/
-	emailBox: function () {
-	    var emailContainer = this.document.getElementById('email-container');
-	    if(null != emailContainer)
-	    {
-	        return;
-	    }
-
-	    var emailContainer = this.document.createElement('div');
-	    emailContainer.setAttribute('id', 'email-container');
-	    emailContainer.innerHTML = '<iframe src="'+readability.emailSrc + '?pageUrl='+escape(window.location)+'&pageTitle='+escape(this.document.title)+'" scrolling="no" onload="readability.removeFrame()" style="width:500px; height: 490px; border: 0;"></iframe>';
-
-	    this.document.body.appendChild(emailContainer);
-	},
-
-	/**
-	 * Show the email popup.
-	 *
-	 * @return void
-	 **/
-	kindleBox: function () {
-	    var kindleContainer = this.document.getElementById('kindle-container');
-	    if(null != kindleContainer)
-	    {
-	        return;
-	    }
-
-	    var kindleContainer = this.document.createElement('div');
-	    kindleContainer.setAttribute('id', 'kindle-container');
-	    kindleContainer.innerHTML = '<iframe id="readabilityKindleIframe" name="readabilityKindleIframe" scrolling="no" onload="readability.removeFrame()" style="width:500px; height: 490px; border: 0;"></iframe>';
-
-	    this.document.body.appendChild(kindleContainer);
-
-		/* Dynamically create a form to be POSTed to the iframe */
-		var formHtml =  '<form id="readabilityKindleForm" style="display: none;" target="readabilityKindleIframe" method="post" action="' + readability.kindleSrc + '">\
-		                     <input type="hidden" name="bodyContent" id="bodyContent" value="' + readability.htmlspecialchars(this.document.getElementById('readability-content').innerHTML) + '" />\
-						     <input type="hidden" name="pageUrl" id="pageUrl" value="' + readability.htmlspecialchars(window.location) + '" />\
-						     <input type="hidden" name="pageTitle" id="pageUrl" value="' + readability.htmlspecialchars(this.document.title) + '" />\
-                         </form>';
-
-		this.document.body.innerHTML += formHtml;
-		this.document.forms['readabilityKindleForm'].submit();
-	},
-
-	/**
-	 * Close the email popup. This is a hacktackular way to check if we're in a "close loop".
-	 * Since we don't have crossdomain access to the frame, we can only know when it has
-	 * loaded again. If it's loaded over 3 times, we know to close the frame.
-	 *
-	 * @return void
-	 **/
-	removeFrame: function () {
-	    readability.iframeLoads++;
-	    if (readability.iframeLoads > 3)
-	    {
-	        var emailContainer = this.document.getElementById('email-container');
-	        if (null !== emailContainer) {
-	            emailContainer.parentNode.removeChild(emailContainer);
-	        }
-
-	        var kindleContainer = this.document.getElementById('kindle-container');
-	        if (null !== kindleContainer) {
-	            kindleContainer.parentNode.removeChild(kindleContainer);
-	        }
-
-	        readability.iframeLoads = 0;
-	    }
 	},
 
 	htmlspecialchars: function (s) {

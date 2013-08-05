@@ -37,7 +37,7 @@
       if (xhr.readyState === 4) {
         callback(xhr.responseText, xhr);
       }
-    }
+    };
     xhr.send();
   }
 
@@ -47,7 +47,7 @@
   function fitContent() {
     var height = window.innerHeight - toolbar.offsetHeight;
     iframe.style.height = readable.style.height = height + 'px';
-  };
+  }
 
   fitContent();
 
@@ -66,12 +66,7 @@
     }
 
     // setup the text only view
-    var doc = document.implementation.createHTMLDocument();
-    doc.open("replace");
-    doc.write(html);
-    doc.close();
-
-    var processed = readability.init(doc);
+    var processed = readability.init({ html: html });
     readable.innerHTML = '<div id="readInner">' + processed.innerHTML + '</div>';
   });
 
