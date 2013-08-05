@@ -28,12 +28,8 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
               '&comments_url=' + encodeURIComponent(request.comments_url) +
               '&viewmode=' + ((options.viewtext === true) ? 'viewtext' : 'original'),
 
-            normal_url = (options.viewtext === true && !yc_url)
-              ? 'http://viewtext.org/api/text?url=' + request.url
-              : request.url,
-
             url = (options.use_toolbar && !yc_url)
-              ? toolbar_url : normal_url;
+              ? toolbar_url : request.url;
 
             if (options.new_window_articles) {
 

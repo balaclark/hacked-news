@@ -4,6 +4,7 @@
   'use strict';
 
   var req = window.location.search.match(/^\?src=(.+)?&title=(.+)&no_comments=(.+)&comments_url=(.+)&viewmode=(.+)$/),
+    srcHtml,
     src = decodeURIComponent(req[1]),
     title = decodeURIComponent(req[2]),
     no_comments = req[3],
@@ -12,12 +13,16 @@
     toolbar = document.querySelector('#toolbar'),
     upvote = document.querySelector('#upvote'),
     iframe = document.querySelector('#content'),
+    readable = document.querySelector('#readable'),
     view_text = document.querySelector('#viewtext'),
     view_original = document.querySelector('#original');
 
   view_original.href = src;
-  view_text.href = 'http://viewtext.org/api/text?url=' + encodeURIComponent(src);
-  iframe.src = (viewmode === 'original') ? src : view_text.href;
+  iframe.src = src;
+
+  if (viewmode === 'original') iframe.style.display = 'block';
+  else if (viewmode === 'viewtext') readable.style.display = 'block';
+
   document.title = title;
   document.querySelector('#title').innerText = title;
   document.querySelector('#close').href = src;
@@ -39,17 +44,19 @@
   /**
    * Tries to keep the iframe height always at 100%.
    */
-  function fitIframe() {
+  function fitContent() {
     var height = window.innerHeight - toolbar.offsetHeight;
-    iframe.style.height = height + 'px';
+    iframe.style.height = readable.style.height = height + 'px';
   };
 
-  fitIframe();
+  fitContent();
 
-  window.addEventListener('resize', fitIframe, false);
+  window.addEventListener('resize', fitContent, false);
 
-  // break out of the iframe if the site doesn't allow embedding
   ajax('GET', src, function (html, xhr) {
+
+    // break out of the iframe if the site doesn't allow embedding
+    // TODO: detect JS frame breakers as well
     if (xhr.getResponseHeader('x-frame-options')) {
       chrome.extension.sendMessage({
         method: 'openBackgroundPage',
@@ -57,6 +64,15 @@
       });
       window.location = src;
     }
+
+    // setup the text only view
+    var doc = document.implementation.createHTMLDocument();
+    doc.open("replace");
+    doc.write(html);
+    doc.close();
+
+    var processed = readability.init(doc);
+    readable.innerHTML = '<div id="readInner">' + processed.innerHTML + '</div>';
   });
 
   function setPoints(html) {
@@ -95,7 +111,8 @@
   // show text only version
   view_text.addEventListener('click', function (e) {
     e.preventDefault();
-    iframe.src = view_text.href;
+    iframe.style.display = 'none';
+    readable.style.display = 'block';
     view_text.style.display = 'none';
     view_original.style.display = 'inline';
   }, false);
@@ -103,7 +120,8 @@
   // show original version
   view_original.addEventListener('click', function (e) {
     e.preventDefault();
-    iframe.src = view_original.href;
+    readable.style.display = 'none';
+    iframe.style.display = 'block';
     view_original.style.display = 'none';
     view_text.style.display = 'inline';
   }, false);
